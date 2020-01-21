@@ -74,7 +74,7 @@ async function up(force)
     await VBoxManage.execute("startvm", `${name} --type headless`);
 
     // Explicit wait for boot
-    let waitTime = 30000;
+    let waitTime = 60000;
     console.log(`Waiting ${waitTime}ms for machine to boot.`);        
     await sleep(waitTime);
     console.log(`VM is currently: ${state}`);
