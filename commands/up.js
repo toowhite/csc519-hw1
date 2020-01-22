@@ -56,6 +56,11 @@ async function up(force)
         // We will delete powered off VMs, which are most likely incomplete builds.
         await VBoxManage.execute("unregistervm", `${name} --delete`);
     }
+    else if( state == 'running' )
+    {
+        console.log(`VM ${name} is running. Use 'V up --force' to build new machine.`);
+        return;
+    }
 
     // Import the VM using the box.ovf file and register it under new name.
     await VBoxManage.execute("import", `"${image}" --vsys 0 --vmname ${name}`);
@@ -65,7 +70,7 @@ async function up(force)
     await VBoxManage.execute("modifyvm", `${name}  --uart1 0x3f8 4 --uartmode1 disconnected`);
 
     // Run your specific customizations for the Virtual Machine.
-    await customize();
+    await customize(name);
 
     // Start the VM.
     // Unlock any session.
@@ -84,16 +89,16 @@ async function up(force)
 
 }
 
-async function customize()
+async function customize(name)
 {
     console.log(chalk.keyword('pink')(`Running VM customizations...`));
 }
 
-async function postconfiguration()
+async function postconfiguration(name)
 {
     console.log(chalk.keyword('pink')(`Running post-configurations...`));
      
-    ssh("ls");
+    ssh("ls /");
 }
 
 // Helper utility to wait.
