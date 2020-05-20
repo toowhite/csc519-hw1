@@ -35,7 +35,7 @@ async function up(force)
 {
     // Use current working directory to derive name of virtual machine
     let cwd = process.cwd().replace(/[/]/g,"-").replace(/\\/g,"-");
-    let name = `V-${cwd}`;    
+    let name = `V`;    
     console.log(chalk.keyword('pink')(`Bringing up machine ${name}`));
 
     // We will use the image we've pulled down with bakerx.
