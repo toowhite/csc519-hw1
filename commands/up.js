@@ -2,6 +2,7 @@ const chalk = require('chalk');
 const fs    = require('fs');
 const os    = require('os');
 const path  = require('path');
+const waitssh = require('waitssh');
 
 const VBoxManage = require('../lib/VBoxManage');
 const ssh = require('../lib/ssh');
@@ -79,10 +80,15 @@ async function up(force)
     await VBoxManage.execute("startvm", `${name} --type headless`);
 
     // Explicit wait for boot
-    let waitTime = 60000;
-    console.log(`Waiting ${waitTime}ms for machine to boot.`);        
-    await sleep(waitTime);
-    console.log(`VM is currently: ${state}`);
+    let sshInfo = {port: 2800, hostname: 'localhost'}
+    try {
+        console.log(`Waiting for ssh to be ready on localhost:2800...`);        
+        await waitssh(sshInfo);
+    } catch (error) {
+        console.error(error);
+        process.exit(1);
+    }    
+    console.log(`ssh is ready`);
     
     // Run your post-configuration customizations for the Virtual Machine.
     await postconfiguration();
@@ -99,9 +105,4 @@ async function postconfiguration(name)
     console.log(chalk.keyword('pink')(`Running post-configurations...`));
      
     ssh("ls /");
-}
-
-// Helper utility to wait.
-async function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
 }
