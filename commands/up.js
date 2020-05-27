@@ -98,6 +98,9 @@ async function up(force)
 async function customize(name)
 {
     console.log(chalk.keyword('pink')(`Running VM customizations...`));
+    await VBoxManage.execute('modifyvm', `${name} --nic1 nat`);
+    await VBoxManage.execute('modifyvm', `${name} --natpf1 "ssh,tcp,,2800,,22"`);
+    await VBoxManage.execute('showvminfo', `${name} | grep "ssh"`);
 }
 
 async function postconfiguration(name)
