@@ -113,6 +113,6 @@ async function postconfiguration(name)
     await ssh("sudo apt-get -y install npm")
     await ssh("sudo apt-get -y install git")
     await ssh("git clone https://github.com/CSC-DevOps/App.git")
-    await ssh('cd App && npm install')
+    await ssh('"cd App && npm install"')
     // await ssh("npm install --prefix ./App")
 }
