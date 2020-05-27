@@ -100,12 +100,19 @@ async function customize(name)
     console.log(chalk.keyword('pink')(`Running VM customizations...`));
     await VBoxManage.execute('modifyvm', `${name} --nic1 nat`);
     await VBoxManage.execute('modifyvm', `${name} --natpf1 "ssh,tcp,,2800,,22"`);
-    await VBoxManage.execute('showvminfo', `${name} | grep "ssh"`);
+    await VBoxManage.execute('modifyvm', `${name} --natpf1 "node,tcp,,9000,,5001"`);
 }
 
 async function postconfiguration(name)
 {
     console.log(chalk.keyword('pink')(`Running post-configurations...`));
-     
-    ssh("ls /");
+    
+    // ssh("ls /");
+    await ssh("sudo apt-get update")
+    await ssh("sudo apt-get -y install nodejs")
+    await ssh("sudo apt-get -y install npm")
+    await ssh("sudo apt-get -y install git")
+    await ssh("git clone https://github.com/CSC-DevOps/App.git")
+    await ssh("cd App")
+    await ssh("npm install")
 }
